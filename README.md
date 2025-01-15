@@ -1,7 +1,8 @@
-# Method-Evolution-Tracker
+# [Method-Evolution-Tracker](https://github.com/tian-2024/Method-Evolution-Tracker)
 
 A tool to track and analyze the evolution of research methods based on paper comparisons.
 
+This project is already deployed on **Github Actions**, every time the `input.md` is updated, the `output.md` will be updated automatically.
 
 ## Overview
 
