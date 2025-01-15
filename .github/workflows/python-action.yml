@@ -1,8 +1,9 @@
 name: Run Python Script on Schedule
 
 on:
-  schedule:
-    - cron: '*/15 * * * *'  # 这里的 cron 表达式表示每天午夜12点运行
+  push:
+    paths:
+      - 'input.md'  # 监听 input.md 文件的更改
   workflow_dispatch:  # 也可以手动触发工作流
 
 jobs:
