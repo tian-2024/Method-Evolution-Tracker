@@ -32,5 +32,4 @@ jobs:
           git config --global user.email "sleeptian@hotmail.com"
           git add output.md  
           git commit -m "Update output.md"  
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
-
+          git push
