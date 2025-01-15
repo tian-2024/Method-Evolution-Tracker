@@ -1,10 +1,5 @@
 ﻿method,baselines
-xx,aa,bb,cc,dd
-yy,xx,cc,dd,
-zz,xx,cc,dd,ee
-uu,xx,cc,dd,ee,ff
-vv,xx,cc,dd,ee,ff
-ww,xx,cc,dd,ee,gg
-rr,xx,cc,dd,ee,gg,hh
-ss,xx,cc,dd,ee,gg,hh,ii
-tt,xx,cc,dd,ee,gg,hh,ii,jj
+LEDITS++,SDEdit,Imagic,DDIM Inversion,Pix2Pix-Zero,DiffEdit,DDPM Inversion
+DDPM Inversion,PnP,EDICT,null-text inversion,CycleDiffusion
+CycleDiffusion,SDEdit,DDIB
+Pix2Pix-Zero,SDEdit,prompt-to-prompt,DDIM

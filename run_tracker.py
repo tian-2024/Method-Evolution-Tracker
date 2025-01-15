@@ -113,34 +113,35 @@ class MethodComparison:
                             f"Updated better methods for {method}: {sorted(self.defeated_by[method])}"
                         )
 
-    def export_to_csv(self, output_path):
+    def export_to_markdown(self, output_path):
         """
-        Export results to a CSV file.
-        Format: The first column is the method, subsequent columns are its better methods.
+        Export results to a markdown file with a table format.
+        Format: | Method | Better Methods |
         """
         if self.compute_transitive:
             self.compute_transitive_closure()
 
-        with open(output_path, "w", newline="") as f:
-            writer = csv.writer(f)
-            # Write header with only two columns
-            writer.writerow(["method", "better methods"])
-            # Write data rows with only actual better methods
+        with open(output_path, "w", encoding='utf-8') as f:
+            # Write table header
+            f.write("| Method | Better Methods |\n")
+            f.write("|--------|----------------|\n")
+            
+            # Write data rows
             for method in sorted(self.defeated_by.keys()):
                 better_methods = sorted(self.defeated_by.get(method, []))
-                writer.writerow([method] + better_methods)
+                better_methods_str = ", ".join(better_methods) if better_methods else "-"
+                f.write(f"| {method} | {better_methods_str} |\n")
 
 
 # Example usage of the script
 if __name__ == "__main__":
-
     # Define command-line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--input", type=str, default="input.csv", help="Path to input CSV file"
     )
     parser.add_argument(
-        "--output", type=str, default="output.csv", help="Path to output CSV file"
+        "--output", type=str, default="output.md", help="Path to output markdown file"
     )
     parser.add_argument("--verbose", action="store_true", help="whether to output detailed information")
     parser.add_argument("--transitive", action="store_true", help="whether to compute transitive closure")
@@ -149,9 +150,9 @@ if __name__ == "__main__":
     # Create an instance of the MethodComparison class
     comparisons = MethodComparison(verbose=args.verbose, compute_transitive=args.transitive)
 
-    # Load data from input CSV and export results to output CSV
+    # Load data from input CSV and export results to markdown
     if comparisons.load_from_csv(args.input):
-        comparisons.export_to_csv(args.output)
+        comparisons.export_to_markdown(args.output)
         print(f"Results saved to {args.output}")
     else:
         print(f"Error processing {args.input}")
