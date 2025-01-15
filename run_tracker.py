@@ -137,13 +137,13 @@ if __name__ == "__main__":
     # Define command-line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--input", type=str, default="baselines.csv", help="Path to input CSV file"
+        "--input", type=str, default="input.csv", help="Path to input CSV file"
     )
     parser.add_argument(
-        "--output", type=str, default="evolutions.csv", help="Path to output CSV file"
+        "--output", type=str, default="output.csv", help="Path to output CSV file"
     )
-    parser.add_argument("--verbose", action="store_true", help="是否输出详细信息")
-    parser.add_argument("--transitive", action="store_true", help="是否计算传递逻辑")
+    parser.add_argument("--verbose", action="store_true", help="whether to output detailed information")
+    parser.add_argument("--transitive", action="store_true", help="whether to compute transitive closure")
     args = parser.parse_args()
 
     # Create an instance of the MethodComparison class
