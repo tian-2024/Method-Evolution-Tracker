@@ -2,7 +2,7 @@ name: Run Python Script on Schedule
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 这里的 cron 表达式表示每天午夜12点运行
+    - cron: '*/15 * * * *'  # 这里的 cron 表达式表示每天午夜12点运行
   workflow_dispatch:  # 也可以手动触发工作流
 
 jobs:
