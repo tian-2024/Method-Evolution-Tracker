@@ -8,41 +8,52 @@ A tool to track and analyze the evolution of research methods based on paper com
 To run the method evolution tracker, execute the following command:
 
 ```bash
-python run_tracker.py
+python run_tracker.py --transitive
 ```
 
 ### Input Format
 
-![input](assets/input.png)
+The input is a markdown file `input.md` with the following format:
+```
+method1>baseline1,baseline2,...
+method2>baseline1,baseline2,...
+```
+For example:
+```
+LEDITS++>SDEdit,Imagic,DDIM Inversion,Pix2Pix-Zero,DiffEdit,DDPM Inversion
+DDPM Inversion>PnP,EDICT,null-text inversion,CycleDiffusion
+```
 
-The input consists of a set of comparisons from research papers. Each comparison indicates which method outperforms others in a given paper. For example:
+which means:
 
-- In paper **xx**, method **xx** is better than methods **aa**, **bb**, **cc**, **dd**.
-- In paper **yy**, method **yy** outperforms **xx**, **cc**, and **dd**.
+- In paper **LEDITS++**, it outperforms methods **SDEdit**, **Imagic**, **DDIM Inversion**, **Pix2Pix-Zero**, **DiffEdit**, **DDPM Inversion**.
+- In paper **DDPM Inversion**, it outperforms methods **PnP**, **EDICT**, **null-text inversion**, **CycleDiffusion**.
 
 ### Output Format
 
-![output](assets/output.png)
-The output generates a summary of the evolution of methods over time. For example,
-- after method **xx** is proposed, subsequent methods like **rr**, **ss**, **tt**, **uu**, **vv** are considered superior. The tool helps track the progression of method **xx** over time.
+The output is a markdown file `output.md` with the following format:
+
+| Method  | Better Methods          |
+| ------- | ----------------------- |
+| method1 | baseline1,baseline2,... |
+
+
+For example:
+
+| Method         | Better Methods                           |
+| -------------- | ---------------------------------------- |
+| CycleDiffusion | DDPM Inversion, LEDITS++                 |
+| DDIB           | CycleDiffusion, DDPM Inversion, LEDITS++ |
+
+
+which means:
+- after method **CycleDiffusion** is proposed, subsequent methods like **DDPM Inversion**, **LEDITS++** are considered superior. 
+- The tool helps track the progression of method **CycleDiffusion** over time.
 
 
 ## Environment
 
 - **Python**: 3.10
-- **Pandas**: 2.0.3
-
-## Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/method-evolution-tracker.git
-   ```
-   
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
 
 ## Parameters
 

@@ -1,12 +1,6 @@
-# Import pandas library for data manipulation
-import pandas as pd
-import csv
-
-# Import argparse library for handling command-line arguments
 import argparse
 
 
-# Define a class for method comparison
 class MethodComparison:
     def __init__(self, verbose=False, compute_transitive=False):
         # Initialize a dictionary to store which methods are defeated by others
@@ -16,46 +10,35 @@ class MethodComparison:
         self.verbose = verbose
         self.compute_transitive = compute_transitive
 
-    def load_from_csv(self, csv_path):
+    def load_from_markdown(self, md_path):
         """
-        Load comparison data from a CSV file.
-        CSV format: The first column is the method, subsequent columns are the baselines it defeats.
+        Load comparison data from a markdown file.
+        Format:
+        Method1>baseline1,baseline2,...
+        Method2>baseline1,baseline2,...
         """
         try:
             # Clear previous data
             self.defeated_by = {}
             self.defeats = {}
 
-            # Determine the maximum number of columns in the CSV file
-            with open(csv_path, "r") as f:
-                max_cols = 0
-                for line in f:
-                    cols = len(line.strip().split(","))
-                    max_cols = max(max_cols, cols)
+            with open(md_path, "r", encoding="utf-8") as f:
+                lines = f.readlines()
 
-            # Read the CSV file with determined column count
-            df = pd.read_csv(
-                csv_path, header=None, on_bad_lines="skip", names=range(max_cols)
-            )
+            # Process each non-empty line
+            data_lines = [line.strip() for line in lines if line.strip()]
 
-            # Iterate over rows in the dataframe, skipping the first row
-            for idx, row in df.iterrows():
-                if idx == 0:  # Skip the header row
-                    continue
-
-                # The first column represents the method
-                method = row[0]
-                # Retrieve all non-empty values in the row (excluding the first column)
-                baselines = [x.strip() for x in row[1:] if pd.notna(x) and x.strip()]
+            # Process each data line
+            for line in data_lines:
+                method, baselines_str = line.split(">")
+                method = method.strip()
+                baselines = [b.strip() for b in baselines_str.split(",")]
 
                 if self.verbose:
                     print(f"Processing method {method}, which defeats: {baselines}")
 
-                # Record the baselines that the method defeats
                 if baselines:
                     self.defeats[method] = set(baselines)
-
-                    # Record that each baseline is defeated by the current method
                     for baseline in baselines:
                         if baseline not in self.defeated_by:
                             self.defeated_by[baseline] = set()
@@ -75,8 +58,7 @@ class MethodComparison:
 
             return True
         except Exception as e:
-            # Handle and print errors during CSV loading
-            print(f"Error loading CSV file: {str(e)}")
+            print(f"Error loading markdown file: {str(e)}")
             return False
 
     def compute_transitive_closure(self):
@@ -121,15 +103,17 @@ class MethodComparison:
         if self.compute_transitive:
             self.compute_transitive_closure()
 
-        with open(output_path, "w", encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             # Write table header
             f.write("| Method | Better Methods |\n")
             f.write("|--------|----------------|\n")
-            
+
             # Write data rows
             for method in sorted(self.defeated_by.keys()):
                 better_methods = sorted(self.defeated_by.get(method, []))
-                better_methods_str = ", ".join(better_methods) if better_methods else "-"
+                better_methods_str = (
+                    ", ".join(better_methods) if better_methods else "-"
+                )
                 f.write(f"| {method} | {better_methods_str} |\n")
 
 
@@ -138,20 +122,28 @@ if __name__ == "__main__":
     # Define command-line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--input", type=str, default="input.csv", help="Path to input CSV file"
+        "--input", type=str, default="input.md", help="Path to input markdown file"
     )
     parser.add_argument(
         "--output", type=str, default="output.md", help="Path to output markdown file"
     )
-    parser.add_argument("--verbose", action="store_true", help="whether to output detailed information")
-    parser.add_argument("--transitive", action="store_true", help="whether to compute transitive closure")
+    parser.add_argument(
+        "--verbose", action="store_true", help="whether to output detailed information"
+    )
+    parser.add_argument(
+        "--transitive",
+        action="store_true",
+        help="whether to compute transitive closure",
+    )
     args = parser.parse_args()
 
     # Create an instance of the MethodComparison class
-    comparisons = MethodComparison(verbose=args.verbose, compute_transitive=args.transitive)
+    comparisons = MethodComparison(
+        verbose=args.verbose, compute_transitive=args.transitive
+    )
 
     # Load data from input CSV and export results to markdown
-    if comparisons.load_from_csv(args.input):
+    if comparisons.load_from_markdown(args.input):
         comparisons.export_to_markdown(args.output)
         print(f"Results saved to {args.output}")
     else:
